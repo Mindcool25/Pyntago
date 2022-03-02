@@ -3,31 +3,23 @@
 class pentago:
     # Initial board state
     matrix = [
-        [
-            [0,0,0],
-            [0,0,0],
-            [0,0,0]
-        ],
-        [
-            [0,0,0],
-            [0,0,0],
-            [0,0,0]
-        ],
-        [
-            [0,0,0],
-            [0,0,0],
-            [0,0,0]
-        ],
-        [
-            [0,0,0],
-            [0,0,0],
-            [0,0,0]
-        ]
+        [0, 0, 0,  0, 0, 0],
+        [0, 0, 0,  0, 0, 0],
+        [0, 0, 0,  0, 0, 0],
+
+        [0, 0, 0,  0, 0, 0],
+        [0, 0, 0,  0, 0, 0],
+        [0, 0, 0,  0, 0, 0]
     ]
+
+    coords = [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
 
     p1 = "X"
     p2 = "O"
     empty = "*"
+
+    currPlayer = 1
+
     def __init__(self):
         return
 
@@ -40,53 +32,129 @@ class pentago:
         return
 
     # Rotate given matrix
-    def rotate(quad):
+    def rotate(self, quad):
         # If there is a "-", rotate counterclockwise, otherwise clockwise
+        print(quad)
+        print(quad[1])
         if quad[0] == "-":
-            counterclockwise(int(quad[1]))
+            self.counterclockwise(int(quad[1]))
         else:
-            clockwise(int(quad[0]))
+            self.clockwise(int(quad[0]))
+
+    # Places marker according to current player input
+    def place(self, playerIn):
+        # Grab quadrant and position from input (example: a1, b3, c9)
+        quad = playerIn[0].lower()
+        pos = int(playerIn[1])
+
+        # Convert letter input to quad number
+        if quad == "a":
+            modx = 0
+            mody = 0
+        elif quad == "b":
+            modx = 3
+            mody = 0
+        elif quad == "c":
+            modx = 0
+            mody = 3
+        elif quad == "d":
+            modx = 3
+            mody = 3
+
+        # Grab actual coordinate from position, using coord matrix
+        pos = self.coords[pos-1]
+
+        # Placing marker according to current player if spot is empty
+        if self.matrix[pos[0] + mody][pos[1] + modx] == 0:
+            self.matrix[pos[0] + mody][pos[1] + modx] = self.currPlayer
+            return True
+        return False
 
     # Rotates matrix clockwise
     def clockwise(self, matrix_num):
-        temp = self.matrix[matrix_num]
-        self.matrix[matrix_num][0][2] = temp[0][0]
-        self.matrix[matrix_num][1][2] = temp[0][1]
-        self.matrix[matrix_num][2][2] = temp[0][2]
-        self.matrix[matrix_num][0][1] = temp[1][0]
-        self.matrix[matrix_num][2][1] = temp[1][2]
-        self.matrix[matrix_num][0][0] = temp[2][0]
-        self.matrix[matrix_num][1][0] = temp[2][1]
-        self.matrix[matrix_num][2][0] = temp[2][2]
+        temp = self.matrix
+
+        # Get correct modifier per quadrant
+        if matrix_num == 1:
+            modx = 0
+            mody = 0
+        elif matrix_num == 2:
+            modx = 3
+            mody = 0
+        elif matrix_num == 3:
+            modx = 0
+            mody = 3
+        elif matrix_num == 4:
+            modx = 3
+            mody = 3
+
+        # Rotating selected quadrant using mods
+        self.matrix[0 + mody][2 + modx] = temp[0 + mody][0 + modx]
+        self.matrix[1 + mody][2 + modx] = temp[0 + mody][1 + modx]
+        self.matrix[2 + mody][2 + modx] = temp[0 + mody][2 + modx]
+        self.matrix[0 + mody][1 + modx] = temp[1 + mody][0 + modx]
+        self.matrix[2 + mody][1 + modx] = temp[1 + mody][2 + modx]
+        self.matrix[0 + mody][0 + modx] = temp[2 + mody][0 + modx]
+        self.matrix[1 + mody][0 + modx] = temp[2 + mody][1 + modx]
+        self.matrix[2 + mody][0 + modx] = temp[2 + mody][2 + modx]
 
     # Rotates matrix counterclockwise
     def counterclockwise(self, matrix_num):
         temp = self.matrix[matrix_num]
-        self.matrix[matrix_num][0][0] = temp[0][2]
-        self.matrix[matrix_num][0][1] = temp[1][2]
-        self.matrix[matrix_num][0][2] = temp[2][2]
-        self.matrix[matrix_num][1][0] = temp[0][1]
-        self.matrix[matrix_num][1][2] = temp[2][1]
-        self.matrix[matrix_num][2][0] = temp[0][0]
-        self.matrix[matrix_num][2][1] = temp[1][0]
-        self.matrix[matrix_num][2][2] = temp[2][0]
 
-    def ai_in(ai_in):
-        place(ai_in[0])
-        rotate(ai_in[1])
+        # Get correct modifier per quadrant
+        if matrix_num == 1:
+            modx = 0
+            mody = 0
+        elif matrix_num == 2:
+            modx = 3
+            mody = 0
+        elif matrix_num == 3:
+            modx = 0
+            mody = 3
+        elif matrix_num == 4:
+            modx = 3
+            mody = 3
 
+        print(modx)
+        print(mody)
+        # Rotating selected quadrant using mods
+        self.matrix[0 + mody][0 + modx] = temp[0 + mody][2 + modx]
+        self.matrix[0 + mody][1 + modx] = temp[1 + mody][2 + modx]
+        self.matrix[0 + mody][2 + modx] = temp[2 + mody][2 + modx]
+        self.matrix[1 + mody][0 + modx] = temp[0 + mody][1 + modx]
+        self.matrix[1 + mody][2 + modx] = temp[2 + mody][1 + modx]
+        self.matrix[2 + mody][0 + modx] = temp[0 + mody][0 + modx]
+        self.matrix[2 + mody][1 + modx] = temp[1 + mody][0 + modx]
+        self.matrix[2 + mody][2 + modx] = temp[2 + mody][0 + modx]
+
+    def ai_in(self, ai_in):
+        self.place(ai_in[0])
+        self.rotate(ai_in[1])
+
+    # Prints out board
     def printBoard(self):
         string = ""
-        # Iterating through top two matricies, row by row.
-        for row in range(0,2):
-            for matrix in range(0,1):
-                for column in range(0,2):
-                    curr = self.matrix[matrix][row][column]
-                    if curr == 0:
-                        string += self.empty + " "
-                    elif curr == 1:
-                        string += self.p1 + " "
-                    elif curr == 2:
-                        string += self.p2 + " "
 
+        # Iterate through matrix, adding p1 markers, p2 markers, and empty markers accordingly
+        for row in range(0, 6):
+            for column in range(0, 6):
+                curr = self.matrix[row][column]
+                if curr == 1:
+                    string += self.p1 + " "
+                elif curr == 2:
+                    string += self.p2 + " "
+                elif curr == 0:
+                    string += self.empty + " "
+
+                # Add middle vertical line
+                if column == 2:
+                    string += "| "
+
+            # Adding newline
+            string += "\n"
+
+            # Print middle horizontal line
+            if row == 2:
+                string += "-" * 13 + "\n"
         print(string)
