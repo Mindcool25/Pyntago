@@ -34,8 +34,6 @@ class pentago:
     # Rotate given matrix
     def rotate(self, quad):
         # If there is a "-", rotate counterclockwise, otherwise clockwise
-        print(quad)
-        print(quad[1])
         if quad[0] == "-":
             self.counterclockwise(int(quad[1]))
         else:
@@ -100,7 +98,7 @@ class pentago:
 
     # Rotates matrix counterclockwise
     def counterclockwise(self, matrix_num):
-        temp = self.matrix[matrix_num]
+        temp = self.matrix
 
         # Get correct modifier per quadrant
         if matrix_num == 1:
@@ -116,8 +114,7 @@ class pentago:
             modx = 3
             mody = 3
 
-        print(modx)
-        print(mody)
+
         # Rotating selected quadrant using mods
         self.matrix[0 + mody][0 + modx] = temp[0 + mody][2 + modx]
         self.matrix[0 + mody][1 + modx] = temp[1 + mody][2 + modx]
