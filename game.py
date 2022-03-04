@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import copy
+
 class pentago:
     # Initial board state
     matrix = [
@@ -43,7 +45,7 @@ class pentago:
 
     # Rotates matrix clockwise
     def clockwise(self, matrix_num):
-        temp = self.matrix
+        temp = copy.deepcopy(self.matrix)
 
         # Get correct modifier per quadrant
         if matrix_num == 1:
@@ -60,8 +62,7 @@ class pentago:
             mody = 3
 
         # Rotating selected quadrant using mods
-        print(self.matrix[0 + mody][0 + modx])
-        print(temp[2 + mody][2 + modx])
+        print(matrix)
         self.matrix[0 + mody][2 + modx] = temp[0 + mody][0 + modx]
         self.matrix[1 + mody][2 + modx] = temp[0 + mody][1 + modx]
         self.matrix[2 + mody][2 + modx] = temp[0 + mody][2 + modx]
@@ -70,11 +71,11 @@ class pentago:
         self.matrix[0 + mody][0 + modx] = temp[2 + mody][0 + modx]
         self.matrix[1 + mody][0 + modx] = temp[2 + mody][1 + modx]
         self.matrix[2 + mody][0 + modx] = temp[2 + mody][2 + modx]
-        print(self.matrix[0 + mody][0 + modx])
+        print(matrix)
 
     # Rotates matrix counterclockwise
     def counterclockwise(self, matrix_num):
-        temp = self.matrix
+        temp = copy.deepcopy(self.matrix)
 
         # Get correct modifier per quadrant
         if matrix_num == 1:
