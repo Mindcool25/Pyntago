@@ -35,9 +35,70 @@ class pentago:
     def rotate(self, quad):
         # If there is a "-", rotate counterclockwise, otherwise clockwise
         if quad[0] == "-":
+            print("Rotating Counterclockwise")
             self.counterclockwise(int(quad[1]))
         else:
+            print("Rotating Clockwise")
             self.clockwise(int(quad[0]))
+
+    # Rotates matrix clockwise
+    def clockwise(self, matrix_num):
+        temp = self.matrix
+
+        # Get correct modifier per quadrant
+        if matrix_num == 1:
+            modx = 0
+            mody = 0
+        elif matrix_num == 2:
+            modx = 3
+            mody = 0
+        elif matrix_num == 3:
+            modx = 0
+            mody = 3
+        elif matrix_num == 4:
+            modx = 3
+            mody = 3
+
+        # Rotating selected quadrant using mods
+        print(self.matrix[0 + mody][0 + modx])
+        print(temp[2 + mody][2 + modx])
+        self.matrix[0 + mody][2 + modx] = temp[0 + mody][0 + modx]
+        self.matrix[1 + mody][2 + modx] = temp[0 + mody][1 + modx]
+        self.matrix[2 + mody][2 + modx] = temp[0 + mody][2 + modx]
+        self.matrix[0 + mody][1 + modx] = temp[1 + mody][0 + modx]
+        self.matrix[2 + mody][1 + modx] = temp[1 + mody][2 + modx]
+        self.matrix[0 + mody][0 + modx] = temp[2 + mody][0 + modx]
+        self.matrix[1 + mody][0 + modx] = temp[2 + mody][1 + modx]
+        self.matrix[2 + mody][0 + modx] = temp[2 + mody][2 + modx]
+        print(self.matrix[0 + mody][0 + modx])
+
+    # Rotates matrix counterclockwise
+    def counterclockwise(self, matrix_num):
+        temp = self.matrix
+
+        # Get correct modifier per quadrant
+        if matrix_num == 1:
+            modx = 0
+            mody = 0
+        elif matrix_num == 2:
+            modx = 3
+            mody = 0
+        elif matrix_num == 3:
+            modx = 0
+            mody = 3
+        elif matrix_num == 4:
+            modx = 3
+            mody = 3
+
+        # Rotating selected quadrant using mods
+        self.matrix[0 + mody][0 + modx] = temp[0 + mody][2 + modx]
+        self.matrix[0 + mody][1 + modx] = temp[1 + mody][2 + modx]
+        self.matrix[0 + mody][2 + modx] = temp[2 + mody][2 + modx]
+        self.matrix[1 + mody][0 + modx] = temp[0 + mody][1 + modx]
+        self.matrix[1 + mody][2 + modx] = temp[2 + mody][1 + modx]
+        self.matrix[2 + mody][0 + modx] = temp[0 + mody][0 + modx]
+        self.matrix[2 + mody][1 + modx] = temp[1 + mody][0 + modx]
+        self.matrix[2 + mody][2 + modx] = temp[2 + mody][0 + modx]
 
     # Places marker according to current player input
     def place(self, playerIn):
@@ -67,63 +128,6 @@ class pentago:
             self.matrix[pos[0] + mody][pos[1] + modx] = self.currPlayer
             return True
         return False
-
-    # Rotates matrix clockwise
-    def clockwise(self, matrix_num):
-        temp = self.matrix
-
-        # Get correct modifier per quadrant
-        if matrix_num == 1:
-            modx = 0
-            mody = 0
-        elif matrix_num == 2:
-            modx = 3
-            mody = 0
-        elif matrix_num == 3:
-            modx = 0
-            mody = 3
-        elif matrix_num == 4:
-            modx = 3
-            mody = 3
-
-        # Rotating selected quadrant using mods
-        self.matrix[0 + mody][2 + modx] = temp[0 + mody][0 + modx]
-        self.matrix[1 + mody][2 + modx] = temp[0 + mody][1 + modx]
-        self.matrix[2 + mody][2 + modx] = temp[0 + mody][2 + modx]
-        self.matrix[0 + mody][1 + modx] = temp[1 + mody][0 + modx]
-        self.matrix[2 + mody][1 + modx] = temp[1 + mody][2 + modx]
-        self.matrix[0 + mody][0 + modx] = temp[2 + mody][0 + modx]
-        self.matrix[1 + mody][0 + modx] = temp[2 + mody][1 + modx]
-        self.matrix[2 + mody][0 + modx] = temp[2 + mody][2 + modx]
-
-    # Rotates matrix counterclockwise
-    def counterclockwise(self, matrix_num):
-        temp = self.matrix
-
-        # Get correct modifier per quadrant
-        if matrix_num == 1:
-            modx = 0
-            mody = 0
-        elif matrix_num == 2:
-            modx = 3
-            mody = 0
-        elif matrix_num == 3:
-            modx = 0
-            mody = 3
-        elif matrix_num == 4:
-            modx = 3
-            mody = 3
-
-
-        # Rotating selected quadrant using mods
-        self.matrix[0 + mody][0 + modx] = temp[0 + mody][2 + modx]
-        self.matrix[0 + mody][1 + modx] = temp[1 + mody][2 + modx]
-        self.matrix[0 + mody][2 + modx] = temp[2 + mody][2 + modx]
-        self.matrix[1 + mody][0 + modx] = temp[0 + mody][1 + modx]
-        self.matrix[1 + mody][2 + modx] = temp[2 + mody][1 + modx]
-        self.matrix[2 + mody][0 + modx] = temp[0 + mody][0 + modx]
-        self.matrix[2 + mody][1 + modx] = temp[1 + mody][0 + modx]
-        self.matrix[2 + mody][2 + modx] = temp[2 + mody][0 + modx]
 
     def ai_in(self, ai_in):
         self.place(ai_in[0])
