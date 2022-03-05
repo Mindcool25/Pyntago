@@ -4,15 +4,6 @@ import copy
 
 class pentago:
     # Initial board state
-    matrix = [
-        [0, 0, 0,  0, 0, 0],
-        [0, 0, 0,  0, 0, 0],
-        [0, 0, 0,  0, 0, 0],
-
-        [0, 0, 0,  0, 0, 0],
-        [0, 0, 0,  0, 0, 0],
-        [0, 0, 0,  0, 0, 0]
-    ]
 
     coords = [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
 
@@ -23,6 +14,15 @@ class pentago:
     currPlayer = 1
 
     def __init__(self):
+        self.matrix = [
+            [0, 0, 0,  0, 0, 0],
+            [0, 0, 0,  0, 0, 0],
+            [0, 0, 0,  0, 0, 0],
+
+            [0, 0, 0,  0, 0, 0],
+            [0, 0, 0,  0, 0, 0],
+            [0, 0, 0,  0, 0, 0]
+        ]
         return
 
     # Main game loop, prints everything
@@ -37,10 +37,8 @@ class pentago:
     def rotate(self, quad):
         # If there is a "-", rotate counterclockwise, otherwise clockwise
         if quad[0] == "-":
-            print("Rotating Counterclockwise")
             self.counterclockwise(int(quad[1]))
         else:
-            print("Rotating Clockwise")
             self.clockwise(int(quad[0]))
 
     # Rotates matrix clockwise
@@ -62,7 +60,6 @@ class pentago:
             mody = 3
 
         # Rotating selected quadrant using mods
-        print(matrix)
         self.matrix[0 + mody][2 + modx] = temp[0 + mody][0 + modx]
         self.matrix[1 + mody][2 + modx] = temp[0 + mody][1 + modx]
         self.matrix[2 + mody][2 + modx] = temp[0 + mody][2 + modx]
@@ -71,7 +68,6 @@ class pentago:
         self.matrix[0 + mody][0 + modx] = temp[2 + mody][0 + modx]
         self.matrix[1 + mody][0 + modx] = temp[2 + mody][1 + modx]
         self.matrix[2 + mody][0 + modx] = temp[2 + mody][2 + modx]
-        print(matrix)
 
     # Rotates matrix counterclockwise
     def counterclockwise(self, matrix_num):
@@ -133,7 +129,7 @@ class pentago:
     def ai_in(self, ai_in):
         self.place(ai_in[0])
         self.rotate(ai_in[1])
-
+    
     # Prints out board
     def printBoard(self):
         string = ""
