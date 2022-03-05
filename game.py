@@ -11,8 +11,6 @@ class pentago:
     p2 = "O"
     empty = "*"
 
-    currPlayer = 1
-
     def __init__(self):
         self.matrix = [
             [0, 0, 0,  0, 0, 0],
@@ -23,6 +21,7 @@ class pentago:
             [0, 0, 0,  0, 0, 0],
             [0, 0, 0,  0, 0, 0]
         ]
+        self.currPlayer = 1
         return
 
     # Main game loop, prints everything
