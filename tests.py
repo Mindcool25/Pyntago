@@ -87,9 +87,9 @@ def testWin():
     w.matrix = m
     white_win, black_win = w.check_win()
     if white_win == True:
-        results += "Testing Diagonal Win: Passed\n"
+        results += "Testing Diagonal Win: Passed"
     else:
-        results += "Testing Diagonal Win: Failed\n"
+        results += "Testing Diagonal Win: Failed"
 
 
 
