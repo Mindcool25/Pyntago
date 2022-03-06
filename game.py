@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import re
 
 
 class pentago:
@@ -23,20 +24,70 @@ class pentago:
             [0, 0, 0,  0, 0, 0]
         ]
         self.currPlayer = 1
-        self.win_combs = []
         return
 
     # Main game loop, prints everything
     def main_loop(self):
+        userIn = False
+        userRotation = False
         while True not in self.check_win():
+            # Get user input for placing marker, if failed try again
+            while not userIn:
+                userIn = self.getUserMarker()
 
-            
-            pass
+            # Placing marker according to user input
+            self.place(userIn)
+            self.print_board()
+
+            # Getting user input for rotatoin quadrant, if failed try again
+            while not userRotation:
+                userRotation = self.getUserRotation()
+
+            # Rotating quadrant according to user input
+            self.rotate(userRotation)
+            self.print_board()
+
+            # Resetting userIn and userRotate for next player
+            userIn = False
+            userRotation = False
+
+            # Switching to next player
+            if self.currPlayer == 1:
+                self.currPlayer = 2
+            else:
+                self.currPlayer = 1
+        p1, p2 = self.check_win()
+        if p1:
+            print("Player 1 Won!")
+        else:
+            print("Player 2 Won!")
         return
 
     # Main game loop, doesn't print anything
     def headless_loop(self):
         return
+
+    # Get user input for placing a marker
+    def getUserMarker(self):
+        # Getting input from user
+        coords = input(f"Player {self.currPlayer} enter coords (i.e. c4): ").lower()
+        userIn = re.findall(r'[a-d][1-9]', coords) # oooOOhhHhhh spooky regex
+        if not userIn:
+            print("Invalid input, try again.")
+            return False
+        else:
+            return userIn[0]
+
+    # Getting user input for rotating a quadrant
+    def getUserRotation(self):
+        # Getting input from user
+        rotation = input(f"Player {self.currPlayer} enter rotation (i.e. -1): ").lower()
+        userRotation = re.findall(r'-?[1-4]', rotation) # OoooOOooOooHHhhh even more spooky regex
+        if not userRotation:
+            print("Invalid input, try again.")
+            return False
+        else:
+            return userRotation[0]
 
     # Check if cell is the center of a row of 5
     def winning_cell(self, row, col):
