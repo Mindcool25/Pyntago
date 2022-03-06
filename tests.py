@@ -2,17 +2,7 @@
 
 import game
 
-
-matrix = [
-    [0, 0, 0,  0, 0, 0],
-    [0, 0, 0,  0, 0, 0],
-    [0, 0, 0,  0, 0, 0],
-
-    [0, 0, 0,  0, 0, 0],
-    [0, 0, 0,  0, 0, 0],
-    [0, 0, 0,  0, 0, 0]
-    ]
-
+# Testing placements
 def testPlace():
     p = game.pentago()
     goal = [[0, 1, 0,  0, 0, 0],
@@ -33,23 +23,24 @@ def testPlace():
         del p
         return "Failed"
 
+# Testing for rotation issues, clockwise and counterclockwise
 def testRotation():
     r = game.pentago()
     goal = [[0, 0, 1,  0, 0, 1],
             [0, 0, 0,  0, 0, 0],
             [0, 0, 0,  0, 0, 0],
 
-            [0, 0, 1,  0, 0, 1],
             [0, 0, 0,  0, 0, 0],
-            [0, 0, 0,  0, 0, 0]]
+            [0, 0, 0,  0, 0, 0],
+            [1, 0, 0,  1, 0, 0]]
     r.place("a1")
     r.place("b1")
     r.place("c1")
     r.place("d1")
     r.rotate("1")
     r.rotate("2")
-    r.rotate("3")
-    r.rotate("4")
+    r.rotate("-3")
+    r.rotate("-4")
     if goal == r.matrix:
         del r
         return "Passed"
@@ -58,6 +49,7 @@ def testRotation():
         r.print_board()
         del r
         return "Failed"
+
 
 
 def main():
