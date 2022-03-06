@@ -55,7 +55,7 @@ def testRotation():
         return "Passed"
     else:
         print(r.matrix)
-        r.printBoard()
+        r.print_board()
         del r
         return "Failed"
 

@@ -2,6 +2,7 @@
 
 import copy
 
+
 class pentago:
     # Initial board state
 
@@ -22,6 +23,7 @@ class pentago:
             [0, 0, 0,  0, 0, 0]
         ]
         self.currPlayer = 1
+        self.win_combs = []
         return
 
     # Main game loop, prints everything
@@ -31,6 +33,57 @@ class pentago:
     # Main game loop, doesn't print anything
     def headless_loop(self):
         return
+
+    # Check if cell is the center of a row of 5
+    def winning_cell(self, row, col):
+        offsets = (-2, -1, +1, +2)
+        diag_1 = [*zip(offsets, offsets)]
+        diag_2 = [*zip(offsets, reversed(offsets))]
+        """ True if the given cell is at the centre of a row of 5 """
+        # Note that when checking for a horizontal line we don't need to
+        # check the first two or last two columns - the same logic applies
+        # to rows and diagonals.
+        colour = self.matrix[row][col]
+        # check within row
+        if (1 < col < len(self.matrix[0]) - 2 and
+                all([self.matrix[row][col + c] == colour for c in offsets])):
+            return True
+        # check within column
+        if (1 < row < len(self.matrix) - 2 and
+                all([self.matrix[row + r][col] == colour for r in offsets])):
+            return True
+        # check diagonals
+        if (1 < col < len(self.matrix[0]) - 2 and
+                1 < row < len(self.matrix) - 2 and
+                (all([self.matrix[row + r][col + c] == colour for r, c in diag_1]) or
+                 all([self.matrix[row + r][col + c] == colour for r, c in diag_2]))):
+            return True
+        return False
+
+    # Check if current player has won
+    def check_win(self):
+        white = 1
+        black = 2
+        empty = 0
+        black_win = False
+        white_win = False
+
+        # main loop to check cells
+        for row in range(len(self.matrix)):
+            for col in range(len(self.matrix[0])):
+                cell = self.matrix[row][col]
+                if (cell == empty or
+                        cell == white and white_win or
+                        cell == black and black_win):
+                    pass
+                else:
+                    if cell == white and self.winning_cell(row, col):
+                        white_win = True
+                    if cell == black and self.winning_cell(row, col):
+                        black_win = True
+                    if white_win and black_win:
+                        return True, True
+        return white_win, black_win
 
     # Rotate given matrix
     def rotate(self, quad):
@@ -97,10 +150,10 @@ class pentago:
         self.matrix[2 + mody][2 + modx] = temp[2 + mody][0 + modx]
 
     # Places marker according to current player input
-    def place(self, playerIn):
+    def place(self, player_in):
         # Grab quadrant and position from input (example: a1, b3, c9)
-        quad = playerIn[0].lower()
-        pos = int(playerIn[1])
+        quad = player_in[0].lower()
+        pos = int(player_in[1])
 
         # Convert letter input to quad number
         if quad == "a":
@@ -117,7 +170,7 @@ class pentago:
             mody = 3
 
         # Grab actual coordinate from position, using coord matrix
-        pos = self.coords[pos-1]
+        pos = self.coords[pos - 1]
 
         # Placing marker according to current player if spot is empty
         if self.matrix[pos[0] + mody][pos[1] + modx] == 0:
@@ -128,9 +181,9 @@ class pentago:
     def ai_in(self, ai_in):
         self.place(ai_in[0])
         self.rotate(ai_in[1])
-    
+
     # Prints out board
-    def printBoard(self):
+    def print_board(self):
         string = ""
 
         # Iterate through matrix, adding p1 markers, p2 markers, and empty markers accordingly
