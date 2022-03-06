@@ -50,11 +50,56 @@ def testRotation():
         del r
         return "Failed"
 
+# Testing win condition
+def testWin():
+    results = ""
+    w = game.pentago()
+    m = [[1, 1, 1,  1, 1, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0]]
+    w.matrix = m
+    white_win, black_win = w.check_win()
+    if white_win == True:
+        results += "Testing p1 Win: Passed\n"
+    else:
+        results += "Testing p1 Win: Failed\n"
+    m = [[2, 2, 2,  2, 2, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0],
+         [0, 0, 0,  0, 0, 0]]
+    w.matrix = m
+    white_win, black_win = w.check_win()
+    if black_win == True:
+        results += "Testing p2 Win: Passed\n"
+    else:
+        results += "Testing p2 Win: Failed\n"
+    m = [[1, 2, 2,  2, 2, 0],
+         [0, 1, 0,  0, 0, 0],
+         [0, 0, 1,  0, 0, 0],
+         [0, 0, 0,  1, 0, 0],
+         [0, 0, 0,  0, 1, 0],
+         [0, 0, 0,  0, 0, 0]]
+    w.matrix = m
+    white_win, black_win = w.check_win()
+    if white_win == True:
+        results += "Testing Diagonal Win: Passed\n"
+    else:
+        results += "Testing Diagonal Win: Failed\n"
+
+
+
+    return results
 
 
 def main():
     print("Testing Placements: " + testPlace())
     print("Testing Rotations: " + testRotation())
+    print(testWin())
     return
 
 if __name__ == "__main__":
