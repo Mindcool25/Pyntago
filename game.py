@@ -28,6 +28,10 @@ class pentago:
 
     # Main game loop, prints everything
     def main_loop(self):
+        while True not in self.check_win():
+
+            
+            pass
         return
 
     # Main game loop, doesn't print anything
