@@ -15,13 +15,12 @@ class pentago:
 
     def __init__(self):
         self.matrix = [
-            [0, 0, 0,  0, 0, 0],
-            [0, 0, 0,  0, 0, 0],
-            [0, 0, 0,  0, 0, 0],
-
-            [0, 0, 0,  0, 0, 0],
-            [0, 0, 0,  0, 0, 0],
-            [0, 0, 0,  0, 0, 0]
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0]
         ]
         self.currPlayer = 1
         return
@@ -30,6 +29,7 @@ class pentago:
     def main_loop(self):
         userIn = False
         userRotation = False
+        self.print_board()
         while True not in self.check_win():
             # Get user input for placing marker, if failed try again
             while not userIn:
@@ -71,7 +71,8 @@ class pentago:
     def getUserMarker(self):
         # Getting input from user
         coords = input(f"Player {self.currPlayer} enter coords (i.e. c4): ").lower()
-        userIn = re.findall(r'[a-d][1-9]', coords) # oooOOhhHhhh spooky regex
+        userIn = re.findall(r'[a-d][1-9]', coords)  # oooOOhhHhhh spooky regex
+        # Check if input is valid, both character wise and placement wise
         if not userIn:
             print("Invalid input, try again.")
             return False
@@ -82,14 +83,14 @@ class pentago:
     def getUserRotation(self):
         # Getting input from user
         rotation = input(f"Player {self.currPlayer} enter rotation (i.e. -1): ").lower()
-        userRotation = re.findall(r'-?[1-4]', rotation) # OoooOOooOooHHhhh even more spooky regex
+        userRotation = re.findall(r'-?[1-4]', rotation)  # OoooOOooOooHHhhh even more spooky regex
         if not userRotation:
             print("Invalid input, try again.")
             return False
         else:
             return userRotation[0]
 
-    # Check if cell is the center of a row of 5
+    # Check if cell is the center of a row of 5, credits to Niemmi on stackexchange for the code outline
     def winning_cell(self, row, col):
         offsets = (-2, -1, +1, +2)
         diag_1 = [*zip(offsets, offsets)]
@@ -246,20 +247,19 @@ class pentago:
             for column in range(0, 6):
                 curr = self.matrix[row][column]
                 if curr == 1:
-                    string += self.p1 + " "
+                    string += " " + self.p1 + " "
                 elif curr == 2:
-                    string += self.p2 + " "
+                    string += " " + self.p2 + " "
                 elif curr == 0:
-                    string += self.empty + " "
-
+                    string += " " + self.empty + " "
                 # Add middle vertical line
                 if column == 2:
-                    string += "| "
+                    string += " │ "
 
             # Adding newline
             string += "\n"
 
             # Print middle horizontal line
             if row == 2:
-                string += "-" * 13 + "\n"
+                string += "—" * 9 + " ◯ " + "—" * 9 + "\n"
         print(string)
