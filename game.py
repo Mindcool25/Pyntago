@@ -261,5 +261,5 @@ class pentago:
 
             # Print middle horizontal line
             if row == 2:
-                string += "—" * 9 + " ◯ " + "—" * 9 + "\n"
+                string += "—" * 9 + " + " + "—" * 9 + "\n"
         print(string)
