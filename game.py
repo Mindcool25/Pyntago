@@ -29,7 +29,7 @@ class pentago:
     def main_loop(self):
         userIn = False
         userRotation = False
-        self.print_board()
+        print(self.print_board())
         while True not in self.check_win():
             # Get user input for placing marker, if failed try again
             while not userIn:
@@ -37,7 +37,7 @@ class pentago:
 
             # Placing marker according to user input
             self.place(userIn)
-            self.print_board()
+            print(self.print_board())
 
             # Getting user input for rotatoin quadrant, if failed try again
             while not userRotation:
@@ -45,7 +45,7 @@ class pentago:
 
             # Rotating quadrant according to user input
             self.rotate(userRotation)
-            self.print_board()
+            print(self.print_board())
 
             # Resetting userIn and userRotate for next player
             userIn = False
@@ -262,4 +262,4 @@ class pentago:
             # Print middle horizontal line
             if row == 2:
                 string += "—" * 9 + " + " + "—" * 9 + "\n"
-        print(string)
+        return string
