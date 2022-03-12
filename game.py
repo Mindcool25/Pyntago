@@ -77,7 +77,9 @@ class pentago:
             print("Invalid input, try again.")
             return False
         else:
-            return userIn[0]
+            # Check if placement is valid
+            pos = self.convertInput(userIn[0])
+            return pos
 
     # Getting user input for rotating a quadrant
     def getUserRotation(self):
@@ -205,12 +207,11 @@ class pentago:
         self.matrix[2 + mody][1 + modx] = temp[1 + mody][0 + modx]
         self.matrix[2 + mody][2 + modx] = temp[2 + mody][0 + modx]
 
-    # Places marker according to current player input
-    def place(self, player_in):
+    # Validate that the space isn't filled and change user input to coordinates
+    def convertInput(self, player_in):
         # Grab quadrant and position from input (example: a1, b3, c9)
         quad = player_in[0].lower()
         pos = int(player_in[1])
-
         # Convert letter input to quad number
         if quad == "a":
             modx = 0
@@ -224,15 +225,21 @@ class pentago:
         elif quad == "d":
             modx = 3
             mody = 3
-
         # Grab actual coordinate from position, using coord matrix
         pos = self.coords[pos - 1]
+        # Check if space is already occupied
+        if self.matrix[pos[0] + mody][pos[1] + modx] != 0:
+            return False
+        else:
+            # Convert to actual coordinates rather than interpeted
+            pos[0] += mody
+            pos[1] += modx
+            return pos
 
+    # Places marker according to current player input
+    def place(self, pos):
         # Placing marker according to current player if spot is empty
-        if self.matrix[pos[0] + mody][pos[1] + modx] == 0:
-            self.matrix[pos[0] + mody][pos[1] + modx] = self.currPlayer
-            return True
-        return False
+        self.matrix[pos[0]][pos[1]] = self.currPlayer
 
     def ai_in(self, ai_in):
         self.place(ai_in[0])
