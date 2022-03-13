@@ -66,6 +66,7 @@ def server(p1):
             board = g.print_board()
             print(board)
             client.send(serverPrint(board).encode())
+            time.sleep(0.1)
 
             # Get server input for rotation
             while not userRotation:
@@ -74,11 +75,13 @@ def server(p1):
             board = g.print_board()
             print(board)
             client.send(serverPrint(board).encode())
+            time.sleep(0.1)
         else:
             # Get client input for placing a marker
             client.send("2test".encode())
             clientIn = client.recv(1024).decode()
-            g.place(g.convertInput(clientIn))
+            clientPos = g.convertInput(clientIn)
+            g.place(clientPos)
             board = g.print_board()
             print(board)
             client.send(serverPrint(board).encode())
@@ -99,16 +102,17 @@ def server(p1):
         if g.currPlayer == 1:
             g.currPlayer = 2
         else:
-            g.currplayer = 1
+            g.currPlayer = 1
         # Switch multiplayer's current player
         if turn == 1:
             turn = 2
         else:
             turn = 1
 
+
     # If a player has won
-    p1, p2 = g.check_win()
-    if p1:
+    server, client = g.check_win()
+    if server:
         print("You won!")
         client.send("9p1".encode())
     else:
