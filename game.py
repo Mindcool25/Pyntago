@@ -212,6 +212,7 @@ class pentago:
         # Grab quadrant and position from input (example: a1, b3, c9)
         quad = player_in[0].lower()
         pos = int(player_in[1])
+        newPos = [0, 0]
         # Convert letter input to quad number
         if quad == "a":
             modx = 0
@@ -226,15 +227,14 @@ class pentago:
             modx = 3
             mody = 3
         # Grab actual coordinate from position, using coord matrix
-        pos = self.coords[pos - 1]
+        newPos = self.coords[pos - 1]
         # Check if space is already occupied
-        if self.matrix[pos[0] + mody][pos[1] + modx] != 0:
+        if self.matrix[newPos[0] + mody][newPos[1] + modx] != 0:
             return False
         else:
             # Convert to actual coordinates rather than interpeted
-            pos[0] += mody
-            pos[1] += modx
-            return pos
+            returnPos = [newPos[0] + mody, newPos[1] + modx]
+            return returnPos 
 
     # Places marker according to current player input
     def place(self, pos):
