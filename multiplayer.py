@@ -78,9 +78,14 @@ def server(p1):
             time.sleep(0.1)
         else:
             # Get client input for placing a marker
-            client.send("2test".encode())
-            clientIn = client.recv(1024).decode()
-            clientPos = g.convertInput(clientIn)
+            clientPos = False
+            while not clientPos:
+                client.send("2test".encode())
+                clientIn = client.recv(1024).decode()
+                clientPos = g.convertInput(clientIn)
+                if not clientPos:
+                    client.send(serverPrint("Invalid move. Try again.").encode())
+                    time.sleep(0.1)
             g.place(clientPos)
             board = g.print_board()
             print(board)
