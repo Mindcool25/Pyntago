@@ -6,7 +6,7 @@ import neat
 import random
 
 
-class AI:
+class ai:
     """
     AI class representing an AI, probably not complex
     enough to warrant second file, but IDK
@@ -25,30 +25,31 @@ def eval_genomes(genomes, config):
     # bird object that uses that network to play
     nets = []
     ge = []
-    AIs = []
+    ais = []
     """
     Associates genes with genomes,
     genomes with networks,
     and networks with players.
     """
-    for gene in genomes:
-        net = neat.nn.FeedForwardNetwork(gene, config)
+    for genome_id, genome in genomes:
+        genome.fitness = 0  # start with fitness level of 0
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
         nets.append(net)
-        gene.fitness = 0
-        ge.append(gene)
+        ge.append(genome)
 
     # Game Simulations occur here
-    while run & len(AIs > 0):
-        sim = game.pentago()
-        sim.print_board()
+    run_game = True
+    while run_game & len(ais) > 0:
+        sim_game = game.pentago()
+        sim_game.print_board()
         # Iterate through all the AIs to generate first move
-        for x, AI in enumerate(AIs):
+        for x, AI in enumerate(ais):
             ai_in = AI.generate_placement(nets[x])
 
 
 def run(config_file):
     """
-    Credit to TechWithTim on YouTube for implementation tutorial
+    Credit to TechWithTim on YouTube for implementation tutorial, code in this method stolen from neat-python docs
     runs the NEAT algorithm to train a neural network to play flappy bird.
     :param config_file: location of config file
     :return: None
