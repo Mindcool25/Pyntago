@@ -111,7 +111,7 @@ def server(p1):
 
 
     # If a player has won
-    server, client = g.check_win()
+    server, c = g.check_win()
     if server:
         print("You won!")
         client.send("9p1".encode())
