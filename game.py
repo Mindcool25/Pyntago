@@ -23,7 +23,11 @@ class pentago:
             [0, 0, 0, 0, 0, 0]
         ]
         self.currPlayer = 1
+        self.turns = 0
         return
+
+    def get_board(self):
+        return self.matrix
 
     # Main game loop, prints everything
     def main_loop(self):
@@ -39,7 +43,7 @@ class pentago:
             self.place(userIn)
             print(self.print_board())
 
-            # Getting user input for rotatoin quadrant, if failed try again
+            # Getting user input for rotation quadrant, if failed try again
             while not userRotation:
                 userRotation = self.getUserRotation()
 
@@ -94,6 +98,8 @@ class pentago:
 
     # Check if cell is the center of a row of 5, credits to Niemmi on stackexchange for the code outline
     def winning_cell(self, row, col):
+        if self.turns == 36:
+            return "Draw"
         offsets = (-2, -1, +1, +2)
         diag_1 = [*zip(offsets, offsets)]
         diag_2 = [*zip(offsets, reversed(offsets))]
@@ -232,7 +238,7 @@ class pentago:
         if self.matrix[newPos[0] + mody][newPos[1] + modx] != 0:
             return False
         else:
-            # Convert to actual coordinates rather than interpeted
+            # Convert to actual coordinates rather than interpreted
             returnPos = [newPos[0] + mody, newPos[1] + modx]
             return returnPos 
 
