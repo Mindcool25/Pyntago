@@ -5,7 +5,6 @@ import re
 import game
 import time
 
-
 logo = """
 ______            _
 | ___ \          | |
@@ -21,6 +20,7 @@ ______            _
 def serverPrint(string):
     string = "1" + string
     return string
+
 
 # Function for server side
 def server(p1):
@@ -54,7 +54,7 @@ def server(p1):
 
     # Start main loop
     while True not in g.check_win():
-        # Setting userIn and userRoation to false for gettting input
+        # Setting userIn and userRotation to false for getting input
         userIn = False
         userRotation = False
         # if turn is 1, it means server is going. else it is the clients turn.
@@ -101,8 +101,6 @@ def server(p1):
             client.send(serverPrint(board).encode())
             time.sleep(0.1)
 
-
-
         # Switch game's current player
         if g.currPlayer == 1:
             g.currPlayer = 2
@@ -114,7 +112,6 @@ def server(p1):
         else:
             turn = 1
 
-
     # If a player has won
     server, c = g.check_win()
     if server:
@@ -124,6 +121,7 @@ def server(p1):
         print(f'{p2} won!')
         client.send("9p2".encode())
 
+
 # Function for clientside operations
 def client(p1):
     # Creating a client socket
@@ -131,7 +129,7 @@ def client(p1):
     port = 25565
     # Validating user's inputted IP
     IP = False
-    while(not IP):
+    while not IP:
         try:
             target = input("Enter IP or URL: ")
             IP = socket.gethostbyname(target)
@@ -148,7 +146,7 @@ def client(p1):
     # Creating a game object for use of the internal methods
     g = game.pentago()
 
-    # Setting up while loop for reciving packets
+    # Setting up while loop for receiving packets
     mode = "0"
     while mode != "9":
         # Get input from server, slice it down to mode and the actual input.
@@ -185,9 +183,6 @@ def client(p1):
                 print("You won!")
 
 
-
-
-
 def main():
     # Print ascii logo and credits
     print(logo)
@@ -206,6 +201,7 @@ def main():
         server(p1)
     else:
         client(p1)
+
 
 if __name__ == "__main__":
     main()
