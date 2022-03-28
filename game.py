@@ -125,6 +125,8 @@ class pentago:
         return False
 
     # Check if current player has won
+    # TODO: Return 0 if no winner, -1 for draw, 1 for p1 win, 2 for p2 win, 3 for both win.
+    # TODO: Fix main loop to work with above modification, same with multiplayer.
     def check_win(self):
         white = 1
         black = 2
