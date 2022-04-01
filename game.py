@@ -34,7 +34,7 @@ class pentago:
         userIn = False
         userRotation = False
         print(self.print_board())
-        while True not in self.check_win():
+        while self.check_win() not in [-1,1,2]:
             # Get user input for placing marker, if failed try again
             while not userIn:
                 userIn = self.getUserMarker()
@@ -60,11 +60,13 @@ class pentago:
                 self.currPlayer = 2
             else:
                 self.currPlayer = 1
-        p1, p2 = self.check_win()
-        if p1:
+        win = self.check_win()
+        if win == 1:
             print("Player 1 Won!")
-        else:
+        elif win == 2:
             print("Player 2 Won!")
+        elif win == -1:
+            print("Draw!")
         return
 
     # Main game loop, doesn't print anything
@@ -149,7 +151,14 @@ class pentago:
                         black_win = True
                     if white_win and black_win:
                         return True, True
-        return white_win, black_win
+        if white_win and black_win:
+            return -1
+        elif white_win:
+            return 1
+        elif black_win:
+            return 2
+        else:
+            return 0
 
     # Rotate given matrix
     def rotate(self, quad):
