@@ -258,10 +258,6 @@ class pentago:
         # Placing marker according to current player if spot is empty
         self.matrix[pos[0]][pos[1]] = self.currPlayer
 
-    def ai_in(self, ai_in):
-        self.place(ai_in[0])
-        self.rotate(ai_in[1])
-
     # Prints out board
     def print_board(self):
         string = ""

@@ -4,39 +4,55 @@ import game
 import os
 import neat
 import threading
+import enum
 import random
+from queue import Queue
+
+class input_type(enum.Enum):
+    x = 0
+    y = 1
+    rotation_direction = 2
+    rotation_quadrant = 3
 
 
 class agent:
-    """
-    AI class representing an AI, probably not complex
-    enough to warrant second file, but IDK
-    """
 
-    def __init__(self):
-        return
+    def __init__(self, net):
+        self.net = net
 
-    def generate_placement(self, nets, agents, ):
-        # TODO add conversion from neural network output (between zero and one)
-        #  to coordinate inputs in the form of a list
-        coords = []
-        x_output = nets[agents.index(agent)].activate()
-        y_output = nets.activate
-        coords += (x_output + y_output)
-        return coords
+    # Generates placement using neural network
+    def generate_placement(self, board_state):
+        placement = []
+        x_output = self.net.activate((board_state, 0))
+        y_output = self.net.activate((board_state, 1))
+        x_output[0] = int(10 * x_output[0]) % 6
+        y_output[0] = int(10 * y_output[0]) % 6
+        print(x_output)
+        print(y_output)
+        placement.append(x_output[0])
+        placement.append(y_output[0])
+        return placement
 
-    def generate_rotation(self, ge):
-        return
+    def generate_rotation(self, board_state):
+        rotation_direction = self.net.activate((board_state, 2))
+        rotation_quadrant = self.net.activate((board_state, 3))
+        rotation_direction = int(10 * rotation_direction[0]) % 2
+        if rotation_direction == 0:
+            rotation_direction = -1
+        rotation_quadrant = int(10 * rotation_quadrant[0]) % 4 + 1
+        rotation = rotation_quadrant * rotation_direction
+        return rotation
 
 
 def eval_genomes(genomes, config):
-    # generations += 1 (Uncomment if you want to keep track of generations) TODO
     # start by creating lists holding the genome itself, the
     # neural network associated with the genome and the
     # bird object that uses that network to play
     nets = []
     ge = []
     agents = []
+    games = []
+    threads = []
     """
     Associates genes with genomes,
     genomes with networks,
@@ -49,34 +65,104 @@ def eval_genomes(genomes, config):
         agents.append(agent)
         ge.append(genome)
 
-    # Game Simulations occur here
-    run_game = True
-    while run_game & len(agents) > 0:
-        agent_threads = [threading.Thread(target=run_agent, args=(agent, nets))]
-        for t in agent_threads:
-            t.start()
+    # Shuffle genomes and nets the same way to generate a shuffled list
+    merged = list(zip(nets, ge))
+    random.shuffle(merged)
+    shuffled_nets = [item[0] for item in merged]
+    shuffled_ge = [item[1] for item in merged]
+    # Game creation occurs here
+    for i in range(0, 50):
+        train_game = game.pentago()
+        games.append(train_game)
+
+    # Thread Creation for each game, then run_game
+    for i in range(0, 50):
+        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], ge[i],
+                                                               shuffled_ge[i], i,)))
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
 
 
-def run_agent(agent, nets):
+def run_game(train_game, net1, net2, genome1, genome2, number):
     """
     Runs simulated game
-    :param agent: AI object
-    :param nets: List containing all neural networks of current generation
-    :return: Match Result TODO
+    :param net2: Player 2
+    :param net1: Player 1
+    :param train_game: list of both agents and game instance
+    :return: Match Result
     """
-    # Create Game Object
-    sim_game = game.pentago()
-    # Game loop
-    play = True
-    while play:
-        board_state = sim_game.get_board()
-        sim_game.print_board()
-        # Iterate through all the AIs to generate first move
-        ai_in = agent.generate_placement()
-        ai_in_rotation = agent.generate_rotation()
-        # TODO Add win checking function here, win checker in game.py is unhelpful because it doesn't tell AI whether
-        #  it won or lost
-    # Possible need to delete sim_game object at this point?
+    # Main game loop, prints everything
+    # print(train_game.print_board())
+    win = 0
+    while win not in [-1, 1, 2]:
+        # Switching to next player
+        board_state = train_game.get_board
+        # Runs Turn for Player 1
+        if train_game.currPlayer == 1:
+
+            # Place Player 1 Piece
+            agent_place(agent(net1), board_state, train_game)
+
+            # Rotate Player 1 Piece
+            train_game.rotate(str(agent(net1).generate_rotation(board_state)))
+
+            # Switches Player
+            train_game.currPlayer = 2
+
+            # Prints Board
+            print(train_game.print_board())
+
+            # Checks Win
+            win = train_game.check_win()
+
+        # Runs Turn for Player 2
+        else:
+
+            # Place Player 2 Piece
+            agent_place(agent(net2), board_state, train_game)
+
+            # Rotate Player 2 Piece
+            train_game.rotate(str(agent(net2).generate_rotation(board_state)))
+
+            # Switches Player
+            train_game.currPlayer = 1
+
+            # Prints Board
+            print(train_game.print_board())
+
+            # Checks Win
+            win = train_game.check_win()
+
+    if win == 1:
+        print("Player 1 Won!")
+
+    elif win == 2:
+        print("Player 2 Won!")
+
+    elif win == -1:
+        print("Draw!")
+
+    return win
+
+
+def agent_place(agent_network, board_state, train_game):
+    placement = agent_network.generate_placement(board_state)
+    # Check If Good Placement
+    if check_valid(placement, train_game):
+        # Place Move
+        train_game.place(placement)
+        return
+    else:
+        return
+
+
+def check_valid(placement, train_game):
+    if train_game.matrix[placement[0]][placement[1]] != 0:
+        return False
+    else:
+        return True
 
 
 def run(config_file):
