@@ -8,6 +8,7 @@ import random
 
 # Global List of win results for fitness:
 results = []
+generation = 0
 
 
 class agent:
@@ -44,6 +45,11 @@ def eval_genomes(genomes, config):
     # neural network associated with the genome and the
     # bird object that uses that network to play
     global results
+
+    global generation
+    generation += 1
+    print("Generation ", generation)
+
     results = []
     nets = []
     ge = []
@@ -144,16 +150,16 @@ def run_game(train_game, net1, net2, ai_number):
             win = train_game.check_win()
 
     if win == 1:
-        print("Player 1 Won!\n", train_game.print_board())
+        print(f"id: {ai_number}\nPlayer 1 Won!\n{train_game.print_board()}")
         results.insert(ai_number, 1)
     elif win == 2:
-        print("Player 2 Won!\n", train_game.print_board())
+        print(f"id: {ai_number}\nPlayer 2 Won!\n{train_game.print_board()}")
         results.insert(ai_number, 2)
     elif win == -1:
-        print("Double Win!\n", train_game.print_board())
+        print(f"id: {ai_number}\nDouble Win!\n{train_game.print_board()}")
         results.insert(ai_number, -1)
     elif win == 0:
-        print("Draw!\n", train_game.print_board())
+        print(f"id: {ai_number}\nDraw!\n{train_game.print_board()}")
         results.insert(ai_number, 0)
     return
 

@@ -7,9 +7,9 @@ reset_on_extinction   = False
 
 [DefaultGenome]
 # node activation options
-activation_default      = identity
+activation_default      = sigmoid
 activation_mutate_rate  = 0.0
-activation_options      = identity
+activation_options      = sigmoid
 
 # node aggregation options
 aggregation_default     = sum
