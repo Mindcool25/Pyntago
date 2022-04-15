@@ -4,18 +4,10 @@ import game
 import os
 import neat
 import threading
-import enum
 import random
 
 # Global List of win results for fitness:
 results = []
-
-
-class input_type(enum.Enum):
-    x = 0
-    y = 1
-    rotation_direction = 2
-    rotation_quadrant = 3
 
 
 class agent:
@@ -24,28 +16,29 @@ class agent:
         self.net = net
 
     # Generates placement using neural network
-    def generate_placement(self, board_state):
-        placement = []
-        x_output = self.net.activate((board_state, 0))
-        y_output = self.net.activate((board_state, 1))
-        x_output[0] = int(10 * x_output[0]) % 6
-        y_output[0] = int(10 * y_output[0]) % 6
-        print(x_output)
-        print(y_output)
-        placement.append(x_output[0])
-        placement.append(y_output[0])
-        return placement
+    def generate_move(self, board_state):
+        ai_move = self.net.activate(board_state)
+        print(ai_move)
+        placement = [0, 0]
 
-    # Generates rotation using neural network
-    def generate_rotation(self, board_state):
-        rotation_direction = self.net.activate((board_state, 2))
-        rotation_quadrant = self.net.activate((board_state, 3))
-        rotation_direction = int(10 * rotation_direction[0]) % 2
-        if rotation_direction == 0:
-            rotation_direction = -1
-        rotation_quadrant = int(10 * rotation_quadrant[0]) % 4 + 1
-        rotation = rotation_quadrant * rotation_direction
-        return rotation
+        # X Coord from NN
+        placement[0] = int(10 * ai_move[0]) % 6
+
+        # Y Coord from NN
+        placement[1] = int(10 * ai_move[1]) % 6
+
+        # Rotation Quadrant from NN
+        rotation = int(10 * ai_move[3]) % 4 + 1
+
+        # Rotation Direction from NN
+        rotation_dir = int(10 * ai_move[2]) % 2
+        if rotation_dir == 0:
+            rotation_dir = -1
+
+        rotation = rotation * rotation_dir
+
+        print(placement, rotation)
+        return placement, str(rotation)
 
 
 def eval_genomes(genomes, config):
@@ -83,7 +76,7 @@ def eval_genomes(genomes, config):
 
     # Thread Creation for each game, then run_game
     for i in range(0, 50):
-        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], i)))
+        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], i,)))
     for thread in threads:
         thread.start()
     for thread in threads:
@@ -106,27 +99,30 @@ def run_game(train_game, net1, net2, ai_number):
     :param train_game: list of both agents and game instance
     :return: Match Result
     """
-    # Main game loop, prints everything
-    # print(train_game.print_board())
     win = 0
     global results
+
+    # Create Agents representing each player
+    a1 = agent(net1)
+    a2 = agent(net2)
+
     while win not in [-1, 1, 2]:
         # Switching to next player
-        board_state = train_game.get_board
+        board_state = train_game.get_board()
         # Runs Turn for Player 1
         if train_game.currPlayer == 1:
 
+            # Generate AI Move
+            a1_placement, a1_rotation = a1.generate_move(board_state)
+
             # Place Player 1 Piece
-            agent_place(agent(net1), board_state, train_game)
+            train_game.place(a1_placement)
 
             # Rotate Player 1 Piece
-            train_game.rotate(str(agent(net1).generate_rotation(board_state)))
+            train_game.rotate(a1_rotation)
 
             # Switches Player
             train_game.currPlayer = 2
-
-            # Prints Board
-            print(train_game.print_board())
 
             # Checks Win
             win = train_game.check_win()
@@ -134,17 +130,17 @@ def run_game(train_game, net1, net2, ai_number):
         # Runs Turn for Player 2
         else:
 
-            # Place Player 2 Piece
-            agent_place(agent(net2), board_state, train_game)
+            # Generate AI Move
+            a2_placement, a2_rotation = a2.generate_move(board_state)
 
-            # Rotate Player 2 Piece
-            train_game.rotate(str(agent(net2).generate_rotation(board_state)))
+            # Place Player 1 Piece
+            train_game.place(a2_placement)
+
+            # Rotate Player 1 Piece
+            train_game.rotate(a2_rotation)
 
             # Switches Player
             train_game.currPlayer = 1
-
-            # Prints Board
-            print(train_game.print_board())
 
             # Checks Win
             win = train_game.check_win()
@@ -164,7 +160,8 @@ def run_game(train_game, net1, net2, ai_number):
     return
 
 
-def agent_place(agent_network, board_state, train_game):
+"""
+def agent_move(agent_network, board_state, train_game):
     placement = agent_network.generate_placement(board_state)
     # Check If Good Placement
     if check_valid(placement, train_game):
@@ -178,6 +175,7 @@ def agent_place(agent_network, board_state, train_game):
             randomGen = [random.randint(0, 5), random.randint(0, 5)]
         train_game.place(randomGen)
         return
+"""
 
 
 def check_valid(placement, train_game):
