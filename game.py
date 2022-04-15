@@ -107,9 +107,9 @@ class pentago:
     # Getting user input for rotating a quadrant
     def getUserRotation(self):
         """
-        Getting input from the user for rotationg a quadrant.
+        Getting input from the user for rotating a quadrant.
 
-        :returns: returns valid player intput
+        :returns: returns valid player input
         """
         # Getting input from user
         rotation = input(f"Player {self.currPlayer} enter rotation (i.e. -1): ").lower()
@@ -126,7 +126,7 @@ class pentago:
         Function for checking if a cell has a winning combination.
         :param row: row of current cell
         :param col: column of current cell
-        :retrurn: boolian if the cell is winning or not
+        :return: boolean if the cell is winning or not
         """
         if self.turns == 36:
             return "Draw"
@@ -313,8 +313,8 @@ class pentago:
     # Prints out board
     def print_board(self):
         """
-        Prints the board out in a human readable form
-        :returns: Returns a string containing the human readable board.
+        Prints the board out in a human-readable form
+        :returns: Returns a string containing the human-readable board.
         """
         string = ""
 
