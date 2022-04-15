@@ -2,11 +2,18 @@
 
 import copy
 import re
+import itertools
 
 
 class pentago:
-    # Initial board state
+    """
+    Pentago game class. Run main_loop to run the game.
 
+    Game class that works with running the pentago game and handling user inputs.
+
+
+    """
+    # Initial board state
     coords = [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
 
     p1 = "X"
@@ -27,10 +34,19 @@ class pentago:
         return
 
     def get_board(self):
-        return self.matrix
+        """
+        Returns the current game board as a 1d list
+        :return: current board as a flat matrix
+        """
+        flat_matrix = list(itertools.chain(*self.matrix))
+        return flat_matrix
 
     # Main game loop, prints everything
     def main_loop(self):
+        """
+        Main gameplay loop
+        Doesn't return anything, just runs the game in a human-readable way.
+        """
         userIn = False
         userRotation = False
         print(self.print_board())
@@ -69,12 +85,13 @@ class pentago:
             print("Draw!")
         return
 
-    # Main game loop, doesn't print anything
-    def headless_loop(self):
-        return
-
     # Get user input for placing a marker
     def getUserMarker(self):
+        """
+        Getting input from the user for placing a marker.
+
+        :returns: user input converted into the 6x6 grid coordinates
+        """
         # Getting input from user
         coords = input(f"Player {self.currPlayer} enter coords (i.e. c4): ").lower()
         userIn = re.findall(r'[a-d][1-9]', coords)  # oooOOhhHhhh spooky regex
@@ -89,6 +106,11 @@ class pentago:
 
     # Getting user input for rotating a quadrant
     def getUserRotation(self):
+        """
+        Getting input from the user for rotationg a quadrant.
+
+        :returns: returns valid player intput
+        """
         # Getting input from user
         rotation = input(f"Player {self.currPlayer} enter rotation (i.e. -1): ").lower()
         userRotation = re.findall(r'-?[1-4]', rotation)  # OoooOOooOooHHhhh even more spooky regex
@@ -100,12 +122,17 @@ class pentago:
 
     # Check if cell is the center of a row of 5, credits to Niemmi on stackexchange for the code outline
     def winning_cell(self, row, col):
+        """
+        Function for checking if a cell has a winning combination.
+        :param row: row of current cell
+        :param col: column of current cell
+        :retrurn: boolian if the cell is winning or not
+        """
         if self.turns == 36:
             return "Draw"
         offsets = (-2, -1, +1, +2)
         diag_1 = [*zip(offsets, offsets)]
         diag_2 = [*zip(offsets, reversed(offsets))]
-        """ True if the given cell is at the centre of a row of 5 """
         # Note that when checking for a horizontal line we don't need to
         # check the first two or last two columns - the same logic applies
         # to rows and diagonals.
@@ -127,9 +154,13 @@ class pentago:
         return False
 
     # Check if current player has won
-    # TODO: Return 0 if no winner, -1 for draw, 1 for p1 win, 2 for p2 win, 3 for both win.
-    # TODO: Fix main loop to work with above modification, same with multiplayer.
+    # DONE: Return 0 if no winner, -1 for draw, 1 for p1 win, 2 for p2 win, 3 for both win.
+    # DONE: Fix main loop to work with above modification, same with multiplayer.
     def check_win(self):
+        """
+        Checks if a player has won
+        :return: returns -1 if a draw, 0 if nothing, 1 if player 1 has won, 2 if player 2 has won
+        """
         white = 1
         black = 2
         empty = 0
@@ -162,6 +193,10 @@ class pentago:
 
     # Rotate given matrix
     def rotate(self, quad):
+        """
+        Rotates quadrant from given input
+        :param quad: positive or negative number between 1 and 4, rotates given quadrant
+        """
         # If there is a "-", rotate counterclockwise, otherwise clockwise
         if quad[0] == "-":
             self.counterclockwise(int(quad[1]))
@@ -170,6 +205,10 @@ class pentago:
 
     # Rotates matrix clockwise
     def clockwise(self, matrix_num):
+        """
+        Rotates given quadrant clockwise
+        :param matrix_num: quadrant that needs to be rotated
+        """
         temp = copy.deepcopy(self.matrix)
 
         # Get correct modifier per quadrant
@@ -198,6 +237,10 @@ class pentago:
 
     # Rotates matrix counterclockwise
     def counterclockwise(self, matrix_num):
+        """
+        Rotates given quadrant counterclockwise
+        :param matrix_num: quadrant that needs to be rotated
+        """
         temp = copy.deepcopy(self.matrix)
 
         # Get correct modifier per quadrant
@@ -226,6 +269,11 @@ class pentago:
 
     # Validate that the space isn't filled and change user input to coordinates
     def convertInput(self, player_in):
+        """
+        Coverts user inputs to valid inputs for the computer.
+        :param player_in: input from the user
+        :return: returns false if invalid move, otherwise returns x and y coordinates.
+        """
         # Grab quadrant and position from input (example: a1, b3, c9)
         quad = player_in[0].lower()
         pos = int(player_in[1])
@@ -255,11 +303,19 @@ class pentago:
 
     # Places marker according to current player input
     def place(self, pos):
+        """
+        Places marker from given position.
+        :param pos: coordinates from user
+        """
         # Placing marker according to current player if spot is empty
         self.matrix[pos[0]][pos[1]] = self.currPlayer
 
     # Prints out board
     def print_board(self):
+        """
+        Prints the board out in a human readable form
+        :returns: Returns a string containing the human readable board.
+        """
         string = ""
 
         # Iterate through matrix, adding p1 markers, p2 markers, and empty markers accordingly
