@@ -6,7 +6,10 @@ import neat
 import threading
 import enum
 import random
-from queue import Queue
+
+# Global List of win results for fitness:
+results = []
+
 
 class input_type(enum.Enum):
     x = 0
@@ -33,6 +36,7 @@ class agent:
         placement.append(y_output[0])
         return placement
 
+    # Generates rotation using neural network
     def generate_rotation(self, board_state):
         rotation_direction = self.net.activate((board_state, 2))
         rotation_quadrant = self.net.activate((board_state, 3))
@@ -48,6 +52,8 @@ def eval_genomes(genomes, config):
     # start by creating lists holding the genome itself, the
     # neural network associated with the genome and the
     # bird object that uses that network to play
+    global results
+    results = []
     nets = []
     ge = []
     agents = []
@@ -69,7 +75,7 @@ def eval_genomes(genomes, config):
     merged = list(zip(nets, ge))
     random.shuffle(merged)
     shuffled_nets = [item[0] for item in merged]
-    shuffled_ge = [item[1] for item in merged]
+
     # Game creation occurs here
     for i in range(0, 50):
         train_game = game.pentago()
@@ -77,17 +83,24 @@ def eval_genomes(genomes, config):
 
     # Thread Creation for each game, then run_game
     for i in range(0, 50):
-        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], ge[i],
-                                                               shuffled_ge[i], i,)))
+        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], i)))
     for thread in threads:
         thread.start()
     for thread in threads:
         thread.join()
 
+    # Append Fitness Values to all AIs
+    for x, result in enumerate(results):
+        if results[x] == 1:
+            ge[x].fitness += 1
+        elif results[x] == 2:
+            ge[x].fitness -= 1
 
-def run_game(train_game, net1, net2, genome1, genome2, number):
+
+def run_game(train_game, net1, net2, ai_number):
     """
     Runs simulated game
+    :param ai_number: Number of Primary AI for data entry, may cause AI to be better at Player 1
     :param net2: Player 2
     :param net1: Player 1
     :param train_game: list of both agents and game instance
@@ -96,6 +109,7 @@ def run_game(train_game, net1, net2, genome1, genome2, number):
     # Main game loop, prints everything
     # print(train_game.print_board())
     win = 0
+    global results
     while win not in [-1, 1, 2]:
         # Switching to next player
         board_state = train_game.get_board
@@ -137,14 +151,17 @@ def run_game(train_game, net1, net2, genome1, genome2, number):
 
     if win == 1:
         print("Player 1 Won!")
-
+        results.insert(ai_number, 1)
     elif win == 2:
         print("Player 2 Won!")
-
+        results.insert(ai_number, 2)
     elif win == -1:
+        print("Double Win!")
+        results.insert(ai_number, -1)
+    elif win == 0:
         print("Draw!")
-
-    return win
+        results.insert(ai_number, 0)
+    return
 
 
 def agent_place(agent_network, board_state, train_game):
@@ -155,6 +172,11 @@ def agent_place(agent_network, board_state, train_game):
         train_game.place(placement)
         return
     else:
+        # Generate Random Placement
+        randomGen = [random.randint(0, 5), random.randint(0, 5)]
+        while not check_valid(randomGen, train_game):
+            randomGen = [random.randint(0, 5), random.randint(0, 5)]
+        train_game.place(randomGen)
         return
 
 
@@ -169,7 +191,7 @@ def run(config_file):
     """
     Credit to TechWithTim on YouTube for implementation tutorial, code in this method largely stolen from neat-python docs
     runs the NEAT algorithm to train a neural network to play flappy bird.
-    :param config_file: location of config file
+    :param: config_file: location of config file
     :return: None
     """
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
@@ -179,12 +201,10 @@ def run(config_file):
     p = neat.Population(config)
 
     # Add a stdout reporter to show progress in the terminal, commented out for now
-    """
-    p.add_reporter(neat.StdOutReporter(True))
-    stats = neat.StatisticsReporter()
-    p.add_reporter(stats)
+    # p.add_reporter(neat.StdOutReporter(True))
+    # stats = neat.StatisticsReporter()
+    # p.add_reporter(stats)
     # p.add_reporter(neat.Checkpointer(5))
-    """
 
     # Run for up to 50 generations.
     winner = p.run(eval_genomes, 50)
