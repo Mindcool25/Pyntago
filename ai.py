@@ -18,7 +18,6 @@ class agent:
     # Generates placement using neural network
     def generate_move(self, board_state):
         ai_move = self.net.activate(board_state)
-        print(ai_move)
         placement = [0, 0]
 
         # X Coord from NN
@@ -37,7 +36,6 @@ class agent:
 
         rotation = rotation * rotation_dir
 
-        print(placement, rotation)
         return placement, str(rotation)
 
 
@@ -76,7 +74,7 @@ def eval_genomes(genomes, config):
 
     # Thread Creation for each game, then run_game
     for i in range(0, 50):
-        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], i,)))
+        threads.append(threading.Thread(target=run_game, args=(games[i], nets[i], shuffled_nets[i], i,), daemon=True))
     for thread in threads:
         thread.start()
     for thread in threads:
@@ -146,16 +144,16 @@ def run_game(train_game, net1, net2, ai_number):
             win = train_game.check_win()
 
     if win == 1:
-        print("Player 1 Won!")
+        print("Player 1 Won!\n", train_game.print_board())
         results.insert(ai_number, 1)
     elif win == 2:
-        print("Player 2 Won!")
+        print("Player 2 Won!\n", train_game.print_board())
         results.insert(ai_number, 2)
     elif win == -1:
-        print("Double Win!")
+        print("Double Win!\n", train_game.print_board())
         results.insert(ai_number, -1)
     elif win == 0:
-        print("Draw!")
+        print("Draw!\n", train_game.print_board())
         results.insert(ai_number, 0)
     return
 
