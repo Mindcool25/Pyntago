@@ -50,7 +50,7 @@ class pentago:
         userIn = False
         userRotation = False
         print(self.print_board())
-        while self.check_win() not in [-1,1,2]:
+        while self.check_win() not in [-1, 1, 2]:
             # Get user input for placing marker, if failed try again
             while not userIn:
                 userIn = self.getUserMarker()
@@ -299,9 +299,10 @@ class pentago:
         else:
             # Convert to actual coordinates rather than interpreted
             returnPos = [newPos[0] + mody, newPos[1] + modx]
-            return returnPos 
+            return returnPos
 
-    # Places marker according to current player input
+            # Places marker according to current player input
+
     def place(self, pos):
         """
         Places marker from given position.
