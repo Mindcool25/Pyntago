@@ -26,7 +26,7 @@ class agent:
 
         # Y Coord from NN
         placement[1] = int(10 * ai_move[1]) % 6
-        print(placement)
+        #print(placement)
         # Rotation Quadrant from NN
         rotation = int(10 * ai_move[3]) % 4 + 1
 
@@ -36,7 +36,7 @@ class agent:
             rotation_dir = -1
 
         rotation = rotation * rotation_dir
-        print(rotation)
+        #print(rotation)
         return placement, str(rotation)
 
 
@@ -48,7 +48,7 @@ def eval_genomes(genomes, config):
 
     global generation
     generation += 1
-    print("Generation ", generation)
+    print(f"Generation {generation}")
 
     results = []
     nets = []
@@ -167,17 +167,19 @@ def run_game(train_game, net1, net2, ai_number):
             win = train_game.check_win()
 
     if win == 1:
-        print(f"id: {ai_number}\nPlayer 1 Won!\n{train_game.print_board()}")
+        #print(f"id: {ai_number} Player 1 Won!")
         results.insert(ai_number, 1)
     elif win == 2:
-        print(f"id: {ai_number}\nPlayer 2 Won!\n{train_game.print_board()}")
+        #print(f"id: {ai_number} Player 2 Won!")
         results.insert(ai_number, 2)
     elif win == -1:
-        print(f"id: {ai_number}\nDouble Win!\n{train_game.print_board()}")
+        #print(f"id: {ai_number} Double Win!")
         results.insert(ai_number, -1)
     elif win == 0:
-        print(f"id: {ai_number}\nDraw!\n{train_game.print_board()}")
+        #print(f"id: {ai_number} Draw!")
         results.insert(ai_number, 0)
+    #if generation == 50:
+        #print(train_game.print_board())
     return
 
 
