@@ -165,6 +165,9 @@ def run_game(train_game, net1, net2, ai_number):
 
             # Checks Win
             win = train_game.check_win()
+        train_game.turns += 1
+        if train_game.turns > 35:
+            win = -1
 
     if win == 1:
         #print(f"id: {ai_number} Player 1 Won!")
