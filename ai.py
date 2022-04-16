@@ -26,7 +26,7 @@ class agent:
 
         # Y Coord from NN
         placement[1] = int(10 * ai_move[1]) % 6
-
+        print(placement)
         # Rotation Quadrant from NN
         rotation = int(10 * ai_move[3]) % 4 + 1
 
@@ -36,7 +36,7 @@ class agent:
             rotation_dir = -1
 
         rotation = rotation * rotation_dir
-
+        print(rotation)
         return placement, str(rotation)
 
 
@@ -120,7 +120,16 @@ def run_game(train_game, net1, net2, ai_number):
             a1_placement, a1_rotation = a1.generate_move(board_state)
 
             # Place Player 1 Piece
-            train_game.place(a1_placement)
+            # Check If Good Placement
+            if check_valid(a1_placement, train_game):
+                # Place Move
+                train_game.place(a1_placement)
+            else:
+                # Generate Random Placement random if invalid move
+                randomGen = [random.randint(0, 5), random.randint(0, 5)]
+                while not check_valid(randomGen, train_game):
+                    randomGen = [random.randint(0, 5), random.randint(0, 5)]
+                train_game.place(randomGen)
 
             # Rotate Player 1 Piece
             train_game.rotate(a1_rotation)
@@ -137,10 +146,18 @@ def run_game(train_game, net1, net2, ai_number):
             # Generate AI Move
             a2_placement, a2_rotation = a2.generate_move(board_state)
 
-            # Place Player 1 Piece
-            train_game.place(a2_placement)
+            # Place Player 2 Piece, random if invalid move
+            if check_valid(a1_placement, train_game):
+                # Place Move
+                train_game.place(a1_placement)
+            else:
+                # Generate Random Placement
+                randomGen = [random.randint(0, 5), random.randint(0, 5)]
+                while not check_valid(randomGen, train_game):
+                    randomGen = [random.randint(0, 5), random.randint(0, 5)]
+                train_game.place(randomGen)
 
-            # Rotate Player 1 Piece
+            # Rotate Player 2 Piece
             train_game.rotate(a2_rotation)
 
             # Switches Player
