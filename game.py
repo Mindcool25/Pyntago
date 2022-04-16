@@ -128,8 +128,6 @@ class pentago:
         :param col: column of current cell
         :return: boolean if the cell is winning or not
         """
-        if self.turns == 36:
-            return "Draw"
         offsets = (-2, -1, +1, +2)
         diag_1 = [*zip(offsets, offsets)]
         diag_2 = [*zip(offsets, reversed(offsets))]
@@ -161,12 +159,13 @@ class pentago:
         Checks if a player has won
         :return: returns -1 if a draw, 0 if nothing, 1 if player 1 has won, 2 if player 2 has won
         """
+        if self.turns == 36:
+            return -1
         white = 1
         black = 2
         empty = 0
         black_win = False
         white_win = False
-
         # main loop to check cells
         for row in range(len(self.matrix)):
             for col in range(len(self.matrix[0])):
@@ -181,7 +180,8 @@ class pentago:
                     if cell == black and self.winning_cell(row, col):
                         black_win = True
                     if white_win and black_win:
-                        return True, True
+                        black_win = True
+                        white_win = True
         if white_win and black_win:
             return -1
         elif white_win:
