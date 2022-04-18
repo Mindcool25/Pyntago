@@ -53,7 +53,7 @@ def server(p1):
     turn = 1
 
     # Start main loop
-    while True not in g.check_win():
+    while g.check_win() not in [-1, 1, 2, 0]:
         # Setting userIn and userRotation to false for getting input
         userIn = False
         userRotation = False
@@ -80,7 +80,7 @@ def server(p1):
             # Get client input for placing a marker
             clientPos = False
             while not clientPos:
-                client.send("2test".encode())
+                client.send("2".encode())
                 clientIn = client.recv(1024).decode()
                 clientPos = g.convertInput(clientIn)
                 if not clientPos:
@@ -93,7 +93,7 @@ def server(p1):
             time.sleep(0.1)
 
             # Get client input for rotation
-            client.send("3test".encode())
+            client.send("3".encode())
             clientRotate = client.recv(1024).decode()
             g.rotate(clientRotate)
             board = g.print_board()
@@ -113,11 +113,11 @@ def server(p1):
             turn = 1
 
     # If a player has won
-    server, c = g.check_win()
-    if server:
+    win = g.check_win()
+    if win == 1:
         print("You won!")
         client.send("9p1".encode())
-    else:
+    elif win == 2:
         print(f'{p2} won!')
         client.send("9p2".encode())
 
@@ -179,8 +179,10 @@ def client(p1):
         elif mode == "9":
             if serverIn == "p1":
                 print(f"{p2} won!")
-            else:
+            elif serverIn == "p2":
                 print("You won!")
+            else:
+                print("Draw!")
 
 
 def main():
