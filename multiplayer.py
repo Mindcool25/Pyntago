@@ -53,7 +53,7 @@ def server(p1):
     turn = 1
 
     # Start main loop
-    while g.check_win() not in [-1, 1, 2, 0]:
+    while g.check_win() not in [-1, 1, 2]:
         # Setting userIn and userRotation to false for getting input
         userIn = False
         userRotation = False
@@ -80,7 +80,7 @@ def server(p1):
             # Get client input for placing a marker
             clientPos = False
             while not clientPos:
-                client.send("2".encode())
+                client.send("2place".encode())
                 clientIn = client.recv(1024).decode()
                 clientPos = g.convertInput(clientIn)
                 if not clientPos:
@@ -93,7 +93,7 @@ def server(p1):
             time.sleep(0.1)
 
             # Get client input for rotation
-            client.send("3".encode())
+            client.send("3rotate".encode())
             clientRotate = client.recv(1024).decode()
             g.rotate(clientRotate)
             board = g.print_board()
@@ -151,7 +151,8 @@ def client(p1):
     while mode != "9":
         # Get input from server, slice it down to mode and the actual input.
         serverIn = client.recv(1024).decode()
-        mode = serverIn[0]
+        if serverIn != "":
+            mode = serverIn[0]
         serverIn = serverIn[1::]
         # Defining different types of packets
         # 1 - Print out the message
